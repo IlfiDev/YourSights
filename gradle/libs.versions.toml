@@ -10,6 +10,7 @@ activityCompose = "1.9.0"
 composeBom = "2023.08.00"
 mapsCompose = "4.4.1"
 osmAndrodCompose = "0.0.5"
+osmbonuspack = "6.9.0"
 osmdroidAndroid = "6.1.16"
 retrofit = "2.9.0"
 volley = "1.2.1"
@@ -31,6 +32,7 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 maps-compose = { module = "com.google.maps.android:maps-compose", version.ref = "mapsCompose" }
+osmbonuspack = { module = "com.github.MKergall:osmbonuspack", version.ref = "osmbonuspack" }
 osmdroid-android = { module = "org.osmdroid:osmdroid-android", version.ref = "osmdroidAndroid" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 

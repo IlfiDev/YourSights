@@ -9,22 +9,32 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.outlined.Create
+import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CardElevation
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
@@ -129,5 +139,33 @@ fun SearchSightCard(cardInfo: MapPoint) {
             )
         Text(cardInfo.name)
         Text(cardInfo.city)
+    }
+}
+
+
+@Composable
+fun MainScreenNavigationBar() {
+
+    var selectedItem by remember { mutableIntStateOf(0) }
+    val items = listOf("Search", "Add Route")
+    var icon: ImageVector
+    BottomAppBar {
+        NavigationBar {
+            items.forEachIndexed { index, item ->
+                icon = when (index) {
+                    0 -> Icons.Outlined.Search
+
+                    1 -> Icons.Outlined.Create
+
+                    else -> Icons.Filled.Search
+                }
+                NavigationBarItem(
+                    icon = { Icon(icon, contentDescription = item) },
+                    label = { Text(item) },
+                    selected = selectedItem == index,
+                    onClick = { selectedItem = index }
+                )
+            }
+        }
     }
 }

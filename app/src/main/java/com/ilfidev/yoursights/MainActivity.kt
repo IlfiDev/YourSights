@@ -44,6 +44,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.rememberNavController
 import com.ilfidev.yoursights.UiElements.OsmdroidMapView
 import com.ilfidev.yoursights.UiElements.screens.MainSearchScreen
 import com.ilfidev.yoursights.ui.theme.YourSightsTheme
@@ -59,6 +61,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             YourSightsTheme {
+                val navController = rememberNavController()
                 // A surface container using the 'background' color from the theme
                 MainSearchScreen()
             }

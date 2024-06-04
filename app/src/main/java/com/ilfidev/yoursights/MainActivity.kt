@@ -79,7 +79,7 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 NavHost(navController = navController, startDestination = MainScreen ) {
                     composable<MainScreen> {
-                        MainSearchScreen(navController)
+                        MainSearchScreen(mapViewModel, navController)
                     }
                 }
                 // A surface container using the 'background' color from the theme

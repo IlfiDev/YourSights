@@ -59,13 +59,14 @@ import com.ilfidev.yoursights.R
 import com.ilfidev.yoursights.UiElements.MainScreenNavigationBar
 import com.ilfidev.yoursights.UiElements.OsmdroidMapView
 import com.ilfidev.yoursights.UiElements.animations.AnimateSlideInOut
+import com.ilfidev.yoursights.viewModels.MapViewModel
 import kotlinx.coroutines.launch
 
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainSearchScreen(navController: NavController) {
+fun MainSearchScreen(viewModel: MapViewModel, navController: NavController) {
     val scope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     var isDrawerOpen by remember { mutableStateOf(false) }
@@ -134,7 +135,7 @@ fun MainSearchScreen(navController: NavController) {
                             SearchScreen(navController = navController)
                         }
                         AnimateSlideInOut(visible = visible) {
-                            OsmdroidMapView()
+                            OsmdroidMapView(viewModel = viewModel)
                         }
 //                        if (showSearch) {
 //                        } else {

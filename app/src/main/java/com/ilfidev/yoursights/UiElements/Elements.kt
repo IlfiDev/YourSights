@@ -1,9 +1,8 @@
 package com.ilfidev.yoursights.UiElements
 
-import android.content.res.Resources
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
+import android.os.StrictMode
+import android.os.StrictMode.ThreadPolicy
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,7 +16,6 @@ import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
@@ -26,6 +24,7 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -36,60 +35,67 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
-import androidx.core.graphics.drawable.toBitmap
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.google.android.gms.common.util.MapUtils
 import com.ilfidev.yoursights.R
 import com.ilfidev.yoursights.models.data.MapPoint
-import com.ilfidev.yoursights.models.repository.MapRepository
-import com.ilfidev.yoursights.utils.UtilsMap
 import com.ilfidev.yoursights.viewModels.MapViewModel
 import kotlinx.coroutines.launch
+import org.osmdroid.bonuspack.routing.OSRMRoadManager
+import org.osmdroid.bonuspack.routing.RoadManager
+import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import java.util.UUID
-import kotlin.math.roundToInt
 
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Preview
 @Composable
-fun OsmdroidMapView() {
+fun OsmdroidMapView(viewModel: MapViewModel) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val sheetState = rememberModalBottomSheetState()
+    val route by viewModel.uiState.collectAsState()
     var showBottomSheet by remember { mutableStateOf(false) }
     AndroidView(
         modifier = Modifier.fillMaxSize(),
         factory = { context ->
+            val policy = ThreadPolicy.Builder().permitAll().build()
+            StrictMode.setThreadPolicy(policy)
+            Configuration.getInstance().userAgentValue = "MyUserAgent/1.0"
+            val roadManager = OSRMRoadManager(context, "MyUserAgent/1.0")
+            roadManager.setMean(OSRMRoadManager.MEAN_BY_FOOT)
+            val road = roadManager.getRoad(route.stops.map { it.position } as ArrayList<GeoPoint>?)
+            val roadOverlay = RoadManager.buildRoadOverlay(road)
             val mapView = MapView(context)
+            mapView.overlays.add(roadOverlay)
             mapView.setTileSource(TileSourceFactory.MAPNIK)
             mapView.minZoomLevel = 4.0
             mapView.setBuiltInZoomControls(true)
             mapView.setMultiTouchControls(true)
-            val startPoint = GeoPoint(55.0, 37.0)
-            val startMarker: Marker = Marker(mapView)
-            startMarker.setTitle("Эрмитаж")
             val drawable = ContextCompat.getDrawable(context, R.drawable.ic_launcher_background)
 //            startMarker.icon = UtilsMap.prepareDrawable(resources, drawable!!, "Эрмитаж", 10.0)
-            startMarker.icon = ContextCompat.getDrawable(context, R.drawable.museum_big)
-            startMarker.setPosition(startPoint)
-            startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-            startMarker.setOnMarkerClickListener { marker, mapView ->
-                showBottomSheet = true
-                false
+            var counter = 0
+            route.stops.forEachIndexed { index, mapPoint ->
+                Log.i("Test Route", "$counter")
+                counter += 1
+                val startMarker: Marker = Marker(mapView)
+                startMarker.setTitle("Эрмитаж")
+                startMarker.icon = ContextCompat.getDrawable(context, R.drawable.museum_big)
+                startMarker.setPosition(mapPoint.position)
+                startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                startMarker.setOnMarkerClickListener { marker, mapView ->
+                    showBottomSheet = true
+                    false
 
+                }
+                mapView.overlays.add(startMarker)
             }
-            mapView.overlays.add(startMarker)
             mapView
         }
     )

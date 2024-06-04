@@ -44,11 +44,19 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ilfidev.yoursights.UiElements.OsmdroidMapView
 import com.ilfidev.yoursights.UiElements.screens.MainSearchScreen
+import com.ilfidev.yoursights.models.repository.MapRepository
 import com.ilfidev.yoursights.ui.theme.YourSightsTheme
+import com.ilfidev.yoursights.viewModels.MapViewModel
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.Serializer
 import org.osmdroid.config.Configuration
 
 class MainActivity : ComponentActivity() {
@@ -61,9 +69,20 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             YourSightsTheme {
+                val mapViewModel = viewModel<MapViewModel>(
+                    factory = object : ViewModelProvider.Factory {
+                        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                            return MapViewModel(MapRepository()) as T
+                        }
+                    }
+                )
                 val navController = rememberNavController()
+                NavHost(navController = navController, startDestination = MainScreen ) {
+                    composable<MainScreen> {
+                        MainSearchScreen(navController)
+                    }
+                }
                 // A surface container using the 'background' color from the theme
-                MainSearchScreen()
             }
         }
         val ctx = applicationContext
@@ -72,3 +91,6 @@ class MainActivity : ComponentActivity() {
 
     }
 }
+
+@Serializable
+object MainScreen

@@ -24,13 +24,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import com.ilfidev.yoursights.MainScreen
 import com.ilfidev.yoursights.UiElements.SearchSightCard
 import com.ilfidev.yoursights.models.data.MapPoint
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
-@Preview
+//@Preview
 @Composable
-fun SearchScreen() {
+fun SearchScreen(navController: NavController) {
     val searchResults = listOf(MapPoint(), MapPoint(), MapPoint(), MapPoint(), MapPoint(), MapPoint(), MapPoint())
     var searchText by remember { mutableStateOf("Test") }
     Scaffold(content = {
@@ -47,7 +49,7 @@ fun SearchScreen() {
             }
         },
         floatingActionButton = {
-            FloatingActionButton(onClick = { /*TODO*/ }) {
+            FloatingActionButton(onClick = { navController.navigate(MainScreen) }) {
                 
             }
         }

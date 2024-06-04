@@ -54,6 +54,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.ilfidev.yoursights.R
 import com.ilfidev.yoursights.UiElements.MainScreenNavigationBar
 import com.ilfidev.yoursights.UiElements.OsmdroidMapView
@@ -64,7 +65,7 @@ import kotlinx.coroutines.launch
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainSearchScreen() {
+fun MainSearchScreen(navController: NavController) {
     val scope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     var isDrawerOpen by remember { mutableStateOf(false) }
@@ -130,7 +131,7 @@ fun MainSearchScreen() {
                         color = MaterialTheme.colorScheme.background
                     ) {
                         AnimateSlideInOut(visible = showSearch) {
-                            SearchScreen()
+                            SearchScreen(navController = navController)
                         }
                         AnimateSlideInOut(visible = visible) {
                             OsmdroidMapView()

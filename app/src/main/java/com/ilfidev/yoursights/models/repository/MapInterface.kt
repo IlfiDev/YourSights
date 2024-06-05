@@ -10,8 +10,10 @@ interface MapInterface {
     private val _routesSharedFlow: MutableSharedFlow<Route>
         get() = MutableSharedFlow<Route>(replay = 1)
     val routesSharedFlow: SharedFlow<Route> get() = _routesSharedFlow
+    suspend fun sendRoute(newRoute: Route)
+    suspend fun sendMapPoint(newPoint: MapPoint)
     suspend fun addMapPoint(newPoint: MapPoint)
     suspend fun getMapPoint(pointId: UUID)
     suspend fun getRoute(routeId: UUID)
-
+    suspend fun getRoutesWithSight(sightId: UUID)
 }

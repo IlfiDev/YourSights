@@ -7,10 +7,18 @@ import kotlinx.coroutines.flow.SharedFlow
 import org.osmdroid.util.GeoPoint
 import java.util.UUID
 
-class MapRepository : MapInterface {
+class MapOnlineRepository : MapInterface {
 
     private val _routesSharedFlow = MutableSharedFlow<Route>(replay = 1)
     override val routesSharedFlow: SharedFlow<Route> get() = _routesSharedFlow
+    override suspend fun sendRoute(newRoute: Route) {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun sendMapPoint(newPoint: MapPoint) {
+        TODO("Not yet implemented")
+    }
+
     override suspend fun addMapPoint(newPoint: MapPoint) {
         TODO("Not yet implemented")
     }
@@ -29,5 +37,9 @@ class MapRepository : MapInterface {
                 )
             )
         )
+    }
+
+    override suspend fun getRoutesWithSight(sightId: UUID) {
+        TODO("Not yet implemented")
     }
 }

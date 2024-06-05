@@ -18,15 +18,27 @@ class MapViewModel(val repository: MapInterface) : ViewModel() {
     val uiState: StateFlow<Route> = _mapMarkersState
 
     init {
+        getRoute(UUID.randomUUID())
+    }
+    fun getRoute(routeId: UUID) {
         viewModelScope.launch {
-            getRoute(UUID.randomUUID())
+            repository.getRoute(routeId)
+            repository.routesSharedFlow.collect {
+                    routeData ->
+                _mapMarkersState.value = routeData
+            }
         }
     }
-    suspend fun getRoute(routeId: UUID) {
-        repository.getRoute(routeId)
-        repository.routesSharedFlow.collect {
-            routeData ->
-            _mapMarkersState.value = routeData
+
+    fun getSightInfo(sightId: UUID) {
+        viewModelScope.launch {
+            repository.getMapPoint(sightId)
+        }
+    }
+
+    fun getRoutesWithSight(sightId: UUID) {
+        viewModelScope.launch {
+            repository.getRoutesWithSight(sightId)
         }
     }
 }

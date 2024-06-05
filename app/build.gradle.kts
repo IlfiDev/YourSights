@@ -64,6 +64,7 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.osmdroid.android)
     implementation(libs.retrofit)
+    implementation(libs.converter.gson)
     implementation(libs.osmbonuspack)
     implementation (libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)

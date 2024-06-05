@@ -52,7 +52,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ilfidev.yoursights.UiElements.OsmdroidMapView
 import com.ilfidev.yoursights.UiElements.screens.MainSearchScreen
-import com.ilfidev.yoursights.models.repository.MapRepository
+import com.ilfidev.yoursights.models.repository.MapOnlineRepository
 import com.ilfidev.yoursights.ui.theme.YourSightsTheme
 import com.ilfidev.yoursights.viewModels.MapViewModel
 import kotlinx.serialization.Serializable
@@ -72,7 +72,7 @@ class MainActivity : ComponentActivity() {
                 val mapViewModel = viewModel<MapViewModel>(
                     factory = object : ViewModelProvider.Factory {
                         override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                            return MapViewModel(MapRepository()) as T
+                            return MapViewModel(MapOnlineRepository()) as T
                         }
                     }
                 )

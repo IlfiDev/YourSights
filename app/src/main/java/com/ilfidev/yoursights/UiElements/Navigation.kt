@@ -5,3 +5,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 object SearchScreen
+
+@Serializable
+object RoutesScreen

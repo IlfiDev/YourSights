@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.ilfidev.yoursights.models.data.Route
 import com.ilfidev.yoursights.models.repository.MapInterface
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
@@ -17,6 +18,15 @@ class MapViewModel(val repository: MapInterface) : ViewModel() {
     private val _mapMarkersState = MutableStateFlow(Route())
     val uiState: StateFlow<Route> = _mapMarkersState
 
+    private val _showDataType = MutableStateFlow(SheetStates.Routes)
+    val showDataType: StateFlow<SheetStates> = _showDataType
+
+    enum class SheetStates {
+        Close,
+        MapPoint,
+        Routes,
+
+    }
     init {
         getRoute(UUID.randomUUID())
     }
@@ -40,5 +50,13 @@ class MapViewModel(val repository: MapInterface) : ViewModel() {
         viewModelScope.launch {
             repository.getRoutesWithSight(sightId)
         }
+    }
+
+    fun showPointInfo() {
+        _showDataType.value = SheetStates.MapPoint
+    }
+
+    fun closeSheet() {
+        _showDataType.value = SheetStates.Close
     }
 }

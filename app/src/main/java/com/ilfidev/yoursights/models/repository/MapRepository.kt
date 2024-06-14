@@ -31,9 +31,11 @@ class MapOnlineRepository : MapInterface {
         _routesSharedFlow.emit(
             Route(
                 stops = listOf(
-                    MapPoint(position = GeoPoint(55.5, 37.5)),
-                    MapPoint(position = GeoPoint(55.6, 37.6)),
-                    MapPoint(position = GeoPoint(55.5, 37.7))
+                    MapPoint(position = GeoPoint(55.741556, 37.620028)),
+                    MapPoint(position = GeoPoint(55.752004, 37.617734)),
+                    MapPoint(position = GeoPoint(55.747224, 37.605240)),
+//                    MapPoint(position = GeoPoint(55.624251, 37.514248)),
+                    MapPoint(position = GeoPoint(55.822751, 37.639752)),
                 )
             )
         )

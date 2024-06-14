@@ -51,7 +51,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.ilfidev.yoursights.UiElements.OsmdroidMapView
+import com.ilfidev.yoursights.UiElements.RoutesScreen
 import com.ilfidev.yoursights.UiElements.screens.MainSearchScreen
+import com.ilfidev.yoursights.UiElements.screens.RoutesScreen
+import com.ilfidev.yoursights.models.data.MapPoint
 import com.ilfidev.yoursights.models.repository.MapOnlineRepository
 import com.ilfidev.yoursights.ui.theme.YourSightsTheme
 import com.ilfidev.yoursights.viewModels.MapViewModel
@@ -80,6 +83,11 @@ class MainActivity : ComponentActivity() {
                 NavHost(navController = navController, startDestination = MainScreen ) {
                     composable<MainScreen> {
                         MainSearchScreen(mapViewModel, navController)
+                    }
+                    composable<RoutesScreen> {
+                        com.ilfidev.yoursights.UiElements.screens.RoutesScreen(stops = listOf(
+                            MapPoint()
+                        ))
                     }
                 }
                 // A surface container using the 'background' color from the theme

@@ -26,7 +26,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.ilfidev.yoursights.MainScreen
-import com.ilfidev.yoursights.UiElements.SearchSightCard
+import com.ilfidev.yoursights.UiElements.RoutesScreen
+import com.ilfidev.yoursights.UiElements.SearchScreen
+import com.ilfidev.yoursights.UiElements.cards.SearchSightCard
 import com.ilfidev.yoursights.models.data.MapPoint
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
@@ -44,7 +46,9 @@ fun SearchScreen(navController: NavController) {
                 verticalArrangement = Arrangement.spacedBy(10.dp))
             {
                 items(searchResults) { result ->
-                    SearchSightCard(cardInfo = result)
+                    SearchSightCard(cardInfo = result, onClick = {
+                        navController.navigate(RoutesScreen)
+                    })
                 }
             }
         },

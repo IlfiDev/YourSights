@@ -57,11 +57,8 @@ import java.util.UUID
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OsmdroidMapView(viewModel: MapViewModel) {
-    val context = LocalContext.current
-    val scope = rememberCoroutineScope()
-    val sheetState = rememberModalBottomSheetState()
+
     val route by viewModel.uiState.collectAsState()
-    var showBottomSheet by remember { mutableStateOf(false) }
     AndroidView(
         modifier = Modifier.fillMaxSize(),
         factory = { context ->
@@ -86,11 +83,11 @@ fun OsmdroidMapView(viewModel: MapViewModel) {
                 counter += 1
                 val startMarker: Marker = Marker(mapView)
                 startMarker.setTitle("Эрмитаж")
-                startMarker.icon = ContextCompat.getDrawable(context, R.drawable.museum_big)
+                startMarker.icon = ContextCompat.getDrawable(context, R.drawable.point_flag)
                 startMarker.setPosition(mapPoint.position)
                 startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
                 startMarker.setOnMarkerClickListener { marker, mapView ->
-                    showBottomSheet = true
+                    viewModel.showPointInfo()
                     false
 
                 }
@@ -99,54 +96,9 @@ fun OsmdroidMapView(viewModel: MapViewModel) {
             mapView
         }
     )
-    if (showBottomSheet) {
-        ModalBottomSheet(
-            onDismissRequest = {
-                showBottomSheet = false
-            },
-            sheetState = sheetState
-        ) {
-            // Sheet content
-            Button(onClick = {
-                scope.launch { sheetState.hide() }.invokeOnCompletion {
-                    if (!sheetState.isVisible) {
-                        showBottomSheet = false
-                    }
-                }
-            }) {
-                Text("Скрыть информацию")
 
-            }
-            Column(modifier = Modifier.fillMaxSize()) {
-                for (i in 0..25) {
-                    Text("Test")
-                }
-            }
-        }
-    }
 }
 
-@Preview
-@Composable
-fun SearchSightCardPreview() {
-    SearchSightCard(cardInfo = MapPoint(UUID.randomUUID(), "Test", "Moscow", GeoPoint(0.0, 0.0), "aa", "aaa"))
-}
-
-
-@Composable
-fun SearchSightCard(cardInfo: MapPoint) {
-    Card(elevation = CardDefaults.elevatedCardElevation(10.dp)) {
-        Image(
-            modifier = Modifier
-                .size(200.dp)
-                .clip(RoundedCornerShape(16.dp)),
-            painter = painterResource(id = R.drawable.ic_launcher_background),
-            contentDescription = "test",
-            )
-        Text(cardInfo.name)
-        Text(cardInfo.city)
-    }
-}
 
 
 @Composable

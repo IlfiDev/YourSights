@@ -9,6 +9,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -22,12 +23,15 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.Create
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.BottomSheetScaffold
+import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationBar
@@ -39,8 +43,11 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -50,6 +57,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -59,7 +67,10 @@ import com.ilfidev.yoursights.R
 import com.ilfidev.yoursights.UiElements.MainScreenNavigationBar
 import com.ilfidev.yoursights.UiElements.OsmdroidMapView
 import com.ilfidev.yoursights.UiElements.animations.AnimateSlideInOut
+import com.ilfidev.yoursights.UiElements.cards.RouteStopsCard
+import com.ilfidev.yoursights.models.data.MapPoint
 import com.ilfidev.yoursights.viewModels.MapViewModel
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 
@@ -67,6 +78,9 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainSearchScreen(viewModel: MapViewModel, navController: NavController) {
+    val context = LocalContext.current
+    var showBottomSheet by remember { mutableStateOf(false) }
+    val sheetState = rememberBottomSheetScaffoldState()
     val scope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     var isDrawerOpen by remember { mutableStateOf(false) }
@@ -107,7 +121,7 @@ fun MainSearchScreen(viewModel: MapViewModel, navController: NavController) {
                     TopAppBar(
                         title = {
                             Text(
-                                "Simple TopAppBar",
+                                "Your Sights",
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
                             )
@@ -127,22 +141,55 @@ fun MainSearchScreen(viewModel: MapViewModel, navController: NavController) {
                     )
                 },
                 content = {
-                    Surface(
-                        modifier = Modifier.fillMaxSize(),
-                        color = MaterialTheme.colorScheme.background
-                    ) {
-                        AnimateSlideInOut(visible = showSearch) {
-                            SearchScreen(navController = navController)
-                        }
-                        AnimateSlideInOut(visible = visible) {
-                            OsmdroidMapView(viewModel = viewModel)
-                        }
+
+                    val data by viewModel.showDataType.collectAsState()
+
+                    if (data == MapViewModel.SheetStates.Close) {
+
+                        showBottomSheet = false
+                    } else {
+                        showBottomSheet = true
+                    }
+                    if (showBottomSheet) {
+                        BottomSheetScaffold(
+                            scaffoldState = sheetState,
+//                            onDismissRequest = {
+//                                viewModel.closeSheet()
+//                                showBottomSheet = false
+//                                scope.launch { sheetState.hide() }
+//
+//                            },
+                            sheetPeekHeight = 100.dp,
+                            sheetContent = {
+
+                                when (data) {
+                                    MapViewModel.SheetStates.MapPoint -> RouteStopsCard(cardInfo = MapPoint())
+                                    MapViewModel.SheetStates.Routes -> RoutesScreen(stops = listOf(MapPoint()))
+                                    MapViewModel.SheetStates.Close -> {}
+                                }
+                            }
+                        ) {
+                            // Sheet content
+
+                            Surface(
+                                modifier = Modifier.fillMaxSize(),
+                                color = MaterialTheme.colorScheme.background
+                            ) {
+                                AnimateSlideInOut(visible = showSearch) {
+                                    SearchScreen(navController = navController)
+                                }
+                                AnimateSlideInOut(visible = visible) {
+                                    OsmdroidMapView(viewModel = viewModel)
+                                }
 //                        if (showSearch) {
 //                        } else {
 //                        }
+                            }
+                        }
                     }
                 },
                 bottomBar = {
+
                     AnimateSlideInOut(visible = visible) {
                         MainScreenNavigationBar()
                     }
@@ -158,6 +205,7 @@ fun MainSearchScreen(viewModel: MapViewModel, navController: NavController) {
                     }
                 },
             )
+
         }
     )
 }

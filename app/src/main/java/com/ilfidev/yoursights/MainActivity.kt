@@ -50,9 +50,12 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.ilfidev.yoursights.UiElements.LoginScreen
 import com.ilfidev.yoursights.UiElements.OsmdroidMapView
-import com.ilfidev.yoursights.UiElements.RoutesScreen
+import com.ilfidev.yoursights.UiElements.RegisterScreen
+import com.ilfidev.yoursights.UiElements.screens.LoginScreen
 import com.ilfidev.yoursights.UiElements.screens.MainSearchScreen
+import com.ilfidev.yoursights.UiElements.screens.RegisterScreen
 import com.ilfidev.yoursights.UiElements.screens.RoutesScreen
 import com.ilfidev.yoursights.models.data.MapPoint
 import com.ilfidev.yoursights.models.repository.MapOnlineRepository
@@ -80,15 +83,21 @@ class MainActivity : ComponentActivity() {
                     }
                 )
                 val navController = rememberNavController()
-                NavHost(navController = navController, startDestination = MainScreen ) {
+                NavHost(navController = navController, startDestination = LoginScreen ) {
                     composable<MainScreen> {
                         MainSearchScreen(mapViewModel, navController)
                     }
-                    composable<RoutesScreen> {
-                        com.ilfidev.yoursights.UiElements.screens.RoutesScreen(stops = listOf(
-                            MapPoint()
-                        ))
+                    composable<LoginScreen> {
+                        LoginScreen(navController)
                     }
+                    composable<RegisterScreen> {
+                        com.ilfidev.yoursights.UiElements.screens.RegisterScreen(navController = navController)
+                    }
+//                    composable<RoutesScreen> {
+//                        com.ilfidev.yoursights.UiElements.screens.RoutesScreen(stops = listOf(
+//                            MapPoint()
+//                        ))
+//                    }
                 }
                 // A surface container using the 'background' color from the theme
             }

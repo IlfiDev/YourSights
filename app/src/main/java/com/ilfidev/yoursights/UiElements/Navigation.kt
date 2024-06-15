@@ -7,4 +7,7 @@ import kotlinx.serialization.Serializable
 object SearchScreen
 
 @Serializable
-object RoutesScreen
+object LoginScreen
+
+@Serializable
+object RegisterScreen

@@ -17,19 +17,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.ilfidev.yoursights.UiElements.cards.RouteStopsCard
 import com.ilfidev.yoursights.models.data.MapPoint
+import com.ilfidev.yoursights.models.data.Route
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RoutesScreen(stops: List<MapPoint>) {
+fun RoutesScreen(route: Route) {
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
-    ModalBottomSheet(
-        onDismissRequest = {
-            showBottomSheet = false
-        },
-        sheetState = sheetState
-    ) {
         // Sheet content
 //        Button(onClick = {
 //            scope.launch { sheetState.hide() }.invokeOnCompletion {
@@ -43,12 +38,11 @@ fun RoutesScreen(stops: List<MapPoint>) {
 //        }
         LazyColumn {
 
-            items(stops) { result ->
+            items(route.stops) { result ->
                 RouteStopsCard(cardInfo = result)
             }
         }
     }
-}
 
 
 @Preview
@@ -56,5 +50,6 @@ fun RoutesScreen(stops: List<MapPoint>) {
 fun RouteScreenPreview() {
 
     val searchResults = listOf(MapPoint(), MapPoint(), MapPoint(), MapPoint(), MapPoint(), MapPoint(), MapPoint())
-    RoutesScreen(stops = searchResults)
+    val route = Route(stops = searchResults)
+    RoutesScreen(route = route)
 }

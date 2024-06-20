@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -160,29 +161,45 @@ fun MainSearchScreen(viewModel: MapViewModel, navController: NavController) {
             drawerContent = {
 
                 ModalDrawerSheet {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-
-                        Icon(modifier = Modifier.size(100.dp), painter = painterResource(id = R.drawable.user_icon), contentDescription = "",)
-
-                        Text("Filippov", style = TextStyle(fontSize = 20.sp))
-                        Spacer(Modifier.height(12.dp))
-                        items.forEachIndexed {index, item ->
+                    Column(modifier = Modifier.fillMaxHeight(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.SpaceBetween) {
+                        Column (horizontalAlignment = Alignment.CenterHorizontally) {
+                            Icon(modifier = Modifier.size(100.dp), painter = painterResource(id = R.drawable.user_icon), contentDescription = "",)
+                            Text("Filippov", style = TextStyle(fontSize = 20.sp))
+                            Spacer(Modifier.height(12.dp))
+                            items.forEachIndexed {index, item ->
+                                NavigationDrawerItem(
+                                    icon = { Icon(painter = painterResource(id = item), contentDescription = null) },
+                                    label = { Text(itmesText[index]) },
+                                    selected = item == selectedItem.value,
+                                    onClick = {
+                                        scope.launch {
+                                            drawerState.close()
+                                            isDrawerOpen = false
+                                            Log.i("DrawerState", "$isDrawerOpen")
+                                        }
+                                        selectedItem.value = item
+                                    },
+                                    modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
+                                )
+                            }
                             NavigationDrawerItem(
-                                icon = { Icon(painter = painterResource(id = item), contentDescription = null) },
-                                label = { Text(itmesText[index]) },
-                                selected = item == selectedItem.value,
+                                icon = { Icon(painter = painterResource(id = R.drawable.baseline_exit_to_app_24), contentDescription = null) },
+                                label = { Text("Выход") },
+                                selected = R.drawable.baseline_exit_to_app_24 == selectedItem.value,
                                 onClick = {
                                     scope.launch {
                                         drawerState.close()
                                         isDrawerOpen = false
                                         Log.i("DrawerState", "$isDrawerOpen")
                                     }
-                                    selectedItem.value = item
+                                    selectedItem.value = R.drawable.baseline_exit_to_app_24
                                 },
                                 modifier = Modifier.padding(NavigationDrawerItemDefaults.ItemPadding)
                             )
                         }
+
                     }
+
                 }
             },
             content = {
@@ -297,10 +314,9 @@ fun MainSearchScreen(viewModel: MapViewModel, navController: NavController) {
                 scaffoldState.bottomSheetState.partialExpand()
             }
             if(scaffoldState.bottomSheetState.currentValue == SheetValue.Hidden) {
-                Log.i("DataExp2", expandData.toString())
             }
         }
-        }
+    }
     if (showEndDialog) {
         SendRoute(route = Route(), onDismissRequest = {
             showEndDialog = false
@@ -310,12 +326,10 @@ fun MainSearchScreen(viewModel: MapViewModel, navController: NavController) {
         snapshotFlow { scaffoldState.bottomSheetState.currentValue }.collect { bottomSheetState ->
             Log.i("DataState", bottomSheetState.name)
             if (bottomSheetState == SheetValue.PartiallyExpanded) {
-                Log.i("DataExp3", "A")
                 viewModel.setExpand(false)
                 // Handle bottom sheet being collapsed
             } else {
                 viewModel.setExpand(true)
-                Log.i("DataExp3", "B")
                 // Handle bottom sheet being expanded
             }
         }
